@@ -1,0 +1,21 @@
+CREATE TABLE store (id INTEGER PRIMARY KEY, fruit TEXT, price INTEGER, aisle INTEGER, season TEXT);
+
+Insert into store values (1,"apples",0.35,3,"fall");
+Insert into store values (2,"bananas",0.20,5,"summer");
+Insert into store values (3,"cantaloupe",0.50,1,"summer");
+Insert into store values (4,"dragonfruit",0.75,7,"fall");
+Insert into store values (5,"elderberry",0.40,8,"summer");
+Insert into store values (6,"fig",0.38,9,"summer");
+Insert into store values (7,"grape",0.62,1,"winter");
+Insert into store values (8,"huckleberry",0.81,3,"spring");
+Insert into store values (9,"icaco",0.73,9,"winter");
+Insert into store values (10,"jackfruit",0.85,9,"summer");
+Insert into store values (11,"kabosu",0.59,4,"winter");
+Insert into store values (12,"lychee",0.13,7,"spring");
+Insert into store values (13,"mango",0.25,2,"fall");
+Insert into store values (14,"nectarine",0.38,8,"spring");
+Insert into store values (15,"orange",0.63,6,"summer");
+
+
+select * from store order by price;
+select fruit, MAX(price) from store 
