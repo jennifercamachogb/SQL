@@ -1,0 +1,75 @@
+# This file contains queries I wrote exploring the various statistics and performing analytics on first generation Pokemon data. 
+# The data was curated by Khan Academny 
+
+
+
+CREATE TABLE pokemon(
+  Number     INTEGER,
+  Name       TEXT PRIMARY KEY,
+  Type_1     TEXT,
+  Type_2     TEXT,
+  Total      INTEGER,
+  HP         INTEGER,
+  Attack     INTEGER,
+  Defense    INTEGER,
+  Sp_Atk     INTEGER,
+  Sp_Def     INTEGER,
+  Speed      INTEGER,
+  Generation INTEGER,
+  Legendary  TEXT
+);
+
+
+
+
+# First I calculated the Average, Maximum and Minimum value of every move statistic. 
+
+SELECT AVG(Attack), AVG(Defense), AVG(Sp_Atk), Avg(Sp_Def), AVG(Speed) from pokemon;
+
+SELECT MAX(attack), MAX(defense), MAX(Sp_Atk), Max(Sp_Def), MAX(Speed) from pokemon;
+
+SELECT MIN(attack), MIN(defense), MIN(Sp_Atk), MIN(Sp_Def), MIN(Speed) from pokemon;
+
+
+
+
+# Next, I determined which Fire type pokemon had a total attack statisitic greater than 200.
+
+SELECT Number, Name, Attack + Sp_Atk as Total_Attack from pokemon
+   WHERE Type_1 = "Fire" or Type_2 = "Fire"
+   GROUP BY name
+   HAVING Total_Attack >= 200;
+   
+
+
+# Then, I calculted the total average defense of all Gen 1 Pokemon.
+
+SELECT AVG(Defense + Sp_Def) AS Total_Avg_Def FROM pokemon;
+
+
+
+
+# I used the Total Average Defense found previously to quantify how many Pokemon are considered above or below average based on their combined defense statistics. 
+
+SELECT COUNT(*) AS Number_of_Pokemon,
+    CASE 
+        WHEN (Defense + Sp_Def) > 139.95 THEN         "Above Avg"
+        WHEN (Defense + Sp_Def) < 139.95 THEN         "Below Avg"
+    END AS "Defense_level"
+FROM pokemon
+GROUP BY Defense_level;
+
+
+
+# Next, I determined which legendary Pokemon only consist of one type. 
+
+SELECT Number, Name from pokemon 
+WHERE Type_2 != "Null" AND Legendary = "True";
+
+
+
+
+# Lastly, I verified all first generation psychic typer Pokemon. 
+
+SELECT Number, Name from pokemon 
+WHERE Type_1 = "Psychic" or Type_2 = "Psychic";
