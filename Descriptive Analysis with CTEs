@@ -29,3 +29,25 @@ FROM
     MonthlyRevs
 GROUP BY 
     ProductName
+
+
+
+/// In this query I find the distribution of users across the number of times an email marketing link
+was clicked on per user. /// 
+
+with num_clicks as(
+SELECT 
+    userid,
+    COUNT(EVENTID) as num_link_clicks
+FROM 
+    frontendeventlog
+WHERE eventid = 5
+GROUP BY  userid 
+)
+
+SELECT 
+    count(userid) as num_users, 
+    num_link_clicks 
+FROM 
+    num_clicks 
+GROUP BY num_link_clicks
