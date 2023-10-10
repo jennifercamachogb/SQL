@@ -1,0 +1,31 @@
+///Calcutating descriptive statistics for monthly revenue by product. 
+In this query I answered how much revenue each product subscription (basic or expert) was generating each month for the year 2022, 
+which product had the most success throughout the year, and revealed the month-to-month trend for each product. ///
+
+
+with MonthlyRevs as (
+
+SELECT 
+    date_trunc('month', s.OrderDate) as OrderMonth,
+    p.ProductName,
+    SUM(s.Revenue) as Revenue
+FROM Subscriptions s
+JOIN Products p 
+ON s.ProductID=p.ProductID
+WHERE
+    s.OrderDate between '2022-01-01' and '2022-12-31'
+GROUP BY 
+    p.ProductName,
+    date_trunc('month', s.OrderDate)
+)
+
+SELECT 
+    ProductName ,
+    min(Revenue) as Min_Rev, 
+    max(Revenue) as Max_Rev,
+    avg(Revenue) as Avg_Rev,
+    stddev(Revenue) as Std_Dev_Rev
+FROM 
+    MonthlyRevs
+GROUP BY 
+    ProductName
