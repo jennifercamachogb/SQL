@@ -29,7 +29,7 @@ FROM
     MonthlyRevs
 GROUP BY 
     ProductName
-
+;
 
 
 /// In this query I find the distribution of users across the number of times an email marketing link
@@ -51,3 +51,51 @@ SELECT
 FROM 
     num_clicks 
 GROUP BY num_link_clicks
+;
+
+
+/// Here I used multiple CTEs to perform a payment funnel analysis in order to understand the furthest point 
+in a payment process users were getting to and also the different points at which they experienced errors.
+
+
+with max_status_reached as (
+SELECT
+	subscriptionID,
+	max(statusid) as maxstatus 
+FROM 
+	paymentstatuslog
+GROUP BY  
+	subscriptionID
+)
+,
+
+pfs as (
+SELECT
+	s.subscriptionID,
+
+CASE when maxstatus = 1 then 'PaymentWidgetOpened'
+		when maxstatus = 2 then 'PaymentEntered'
+		when maxstatus = 3 and currentstatus = 0 then 'User Error with Payment Submission'
+		when maxstatus = 3 and currentstatus != 0 then 'Payment Submitted'
+		when maxstatus = 4 and currentstatus = 0 then 'Payment Processing Error with Vendor'
+		when maxstatus = 4 and currentstatus != 0 then 'Payment Success'
+		when maxstatus = 5 then 'Complete'
+		when maxstatus is null then 'User did not start payment process'
+		end as paymentfunnelstage
+
+FROM 
+	subscriptions s
+LEFT JOIN 
+	max_status m 
+ON 
+	s.SubscriptionID = m.subscriptionID
+)
+
+SELECT
+	COUNT(subscriptionID) as subscriptions,
+	paymentfunnelstage
+FROM
+	pfs 
+GROUP BY  
+	paymentfunnelstage
+;
