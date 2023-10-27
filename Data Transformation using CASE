@@ -1,0 +1,18 @@
+/// In this query I created a binary column to flag customers for upselling opportunities based on their number of registered users 
+and number of product subscriptions. ///
+
+
+SELECT 
+    customerid,
+    COUNT(productid) as num_products,
+    SUM(numberofusers) as total_users,
+CASE 
+    WHEN COUNT(productid) = 1 OR SUM(numberofusers) >= 5000  THEN 1
+    ELSE 0
+    END AS upsell_opportunity 
+FROM 
+    subscriptions 
+GROUP BY 
+    customerid;
+
+    
